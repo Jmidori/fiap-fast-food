@@ -1,0 +1,44 @@
+-- Insert 2 menu items for each menu category
+insert into menu_items (category, name, description, price, available, image) values
+-- For 'lanche' category
+('lanche', 'Cheeseburger', 'A juicy cheeseburger with lettuce, tomato, and cheese.', 10.00, true, decode('89504e470d0a1a0a0000000d494844520000000800000008080200000077d4', 'hex')),
+('lanche', 'Chicken Sandwich', 'A crispy chicken sandwich with mayo and pickles.', 8.50, true, null),
+
+-- For 'acompanhamento' category
+('acompanhamento', 'French Fries', 'Crispy golden fries.', 3.00, true, null),
+('acompanhamento', 'Onion Rings', 'Deep-fried onion rings served with a dipping sauce.', 4.00, true, null),
+
+-- For 'bebida' category
+('bebida', 'Coca Cola', 'Classic Coca Cola.', 2.50, true, null),
+('bebida', 'Orange Juice', 'Freshly squeezed orange juice.', 3.00, true, null),
+
+-- For 'sobremesa' category
+('sobremesa', 'Chocolate Cake', 'Rich and moist chocolate cake.', 5.00, true, null),
+('sobremesa', 'Cheesecake', 'Creamy cheesecake with a graham cracker crust.', 4.50, true, null);
+
+
+-- Insert statuses into the order_status table
+insert into order_status (name, description) values
+('Recebido', 'Order has been received.'),
+('Em preparação', 'Order is being prepared.'),
+('Pronto', 'Order is ready for pickup or delivery.'),
+('Finalizado', 'Order has been completed.');
+
+
+-- Insert an order for each order status with 'QRCode' as payment method
+
+-- Insert an order with 'Recebido' status
+insert into orders (customer_id, status_id, total, pager_number, payment_method, created_at, last_updated_at) values
+(1, (select id from order_status where name = 'Recebido'), 15.50, '12345', 'QRCode', '2024-09-07 13:00:00+00', '2024-09-07 13:00:00+00');
+
+-- Insert an order with 'Em preparação' status
+insert into orders (customer_id, status_id, total, pager_number, payment_method, created_at, last_updated_at) values
+(1, (select id from order_status where name = 'Em preparação'), 22.00, '12346', 'QRCode', '2024-09-07 14:00:00+00', '2024-09-07 14:00:00+00');
+
+-- Insert an order with 'Pronto' status
+insert into orders (customer_id, status_id, total, pager_number, payment_method, created_at, last_updated_at) values
+(1, (select id from order_status where name = 'Pronto'), 8.75, '12347', 'QRCode', '2024-09-07 15:00:00+00', '2024-09-07 15:00:00+00');
+
+-- Insert an order with 'Finalizado' status
+insert into orders (customer_id, status_id, total, pager_number, payment_method, created_at, last_updated_at) values
+(1, (select id from order_status where name = 'Finalizado'), 30.00, '12348', 'QRCode', '2024-09-07 16:00:00+00', '2024-09-07 16:00:00+00');

@@ -1,0 +1,54 @@
+npx sequelize-cli db:migrate
+npx sequelize-cli db:migrate:undo
+
+-- Create table for customers
+create table customers (
+    id serial primary key, 
+    first_name varchar(100) not null, 
+    last_name varchar(100) not null, 
+    cpf char(11) not null, 
+    email varchar(100) not null, 
+    created_at timestamp with time zone
+);
+
+-- Create ENUM type for menu categories
+create type menu_category as enum ('lanche', 'acompanhamento', 'bebida', 'sobremesa');
+
+-- Create table for menu items
+create table menu_items (
+    id serial primary key,
+    category menu_category not null,
+    name varchar(100) not null,
+    description text,
+    price numeric(10, 2) not null,
+    available boolean default true,
+    image bytea
+);
+
+-- Create table for order status
+create table order_status (
+    id serial primary key,
+    name varchar(50) unique not null,
+    description varchar(250)
+);
+
+-- Create table for orders
+create table orders (
+    id serial primary key,
+    customer_id integer references customers(id) on delete set null,
+    status_id integer references order_status(id) on delete set null,
+    total numeric(10, 2),
+    pager_number varchar(5),
+    payment_method varchar(50),
+    created_at timestamp,
+    last_updated_at timestamp
+);
+
+-- Create table for order items
+create table order_items (
+    id serial primary key,
+    order_id integer references orders(id) on delete cascade,
+    menu_item_id integer references menu_items(id),
+    quantity integer not null,
+    price numeric(10, 2) not null
+);

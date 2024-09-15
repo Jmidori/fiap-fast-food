@@ -1,23 +1,41 @@
 version: '1.0'
 
 services:
-  web:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fiap-fast-food-service
+    container_name: fiap-fast-food-api
     ports:
       - "3000:3000"
     depends_on:
       - db
+    command: >
+      sh -c  " node migrations/create-database.js && npx sequelize-cli db:migrate && npm start"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=fiapfastfood
+      - DB_USER=fiapfastfood
+      - DB_PASSWORD=123
 
   db:
     image: postgres
     container_name: postgres-fiapff
     restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1qazxsw@
-      POSTGRES_DB: fiap_fast_food
+      POSTGRES_USER: fiapfastfood
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: fiapfastfood
     ports:
       - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U myuser" ]
+      interval: 10s
+      retries: 5
+volumes:
+  pgdata:
